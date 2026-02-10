@@ -51,5 +51,7 @@ npm install
 # Rodar ambiente de desenvolvimento
 npm run dev
 
+Acesse: https://estudos-fundamental.vercel.app/
+
 Desenvolvido por José Herbert Andrade Silva
 Projeto educacional com foco em aprendizado prático e acessível.
