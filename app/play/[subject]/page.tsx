@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { QuestionCard } from "@/components/QuestionCard";
 
 type Question = {
   id: number;
@@ -11,60 +12,119 @@ type Question = {
   correctAnswer: number;
 };
 
+const TOTAL_QUESTIONS = 10;
+
 export default function PlayPage() {
   const params = useParams();
   const subject = params.subject as string;
 
-  // 🔍 TOPO DO COMPONENTE (AQUI)
-  console.log("PARAMS:", params);
-  console.log("SUBJECT:", subject);
-
   const [question, setQuestion] = useState<Question | null>(null);
-  const [error, setError] = useState("");
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [usedIds, setUsedIds] = useState<number[]>([]); // Guarda as perguntas já feitas
+  const [finished, setFinished] = useState(false);
 
-  useEffect(() => {
-    if (!subject) return;
+  // Estados de pontuação e progresso
+  const [score, setScore] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
 
-    async function fetchQuestion() {
-      try {
-        const res = await fetch(
-          `/api/questions?subject=${subject}`
-        );
-
-        if (!res.ok) {
-          throw new Error("Erro na API");
-        }
-
-        const data: Question = await res.json();
-        setQuestion(data);
-      } catch {
-        setError("Erro ao carregar a pergunta.");
+  // Função para buscar a questão na sua API
+  const fetchQuestion = useCallback(async (exclude: number[] = []) => {
+    try {
+      // Passamos o subject e os IDs que queremos excluir
+      const res = await fetch(`/api/questions?subject=${subject}&exclude=${exclude.join(",")}`);
+      
+      if (!res.ok) {
+        setFinished(true); // Se não houver mais questões, finaliza
+        return;
       }
-    }
 
-    fetchQuestion();
+      const data: Question = await res.json();
+      setQuestion(data);
+      setSelectedOption(null);
+      setShowAnswer(false);
+    } catch (error) {
+      console.error("Erro ao carregar questão:", error);
+    }
   }, [subject]);
 
-  if (error) return <p>{error}</p>;
-  if (!question) return <p>Carregando...</p>;
+  // 🔥 SOLUÇÃO DO B.O.: Dispara a primeira questão assim que a página carrega
+  useEffect(() => {
+    if (subject) {
+      fetchQuestion([]); 
+    }
+  }, [subject, fetchQuestion]);
+
+  function handleSelectOption(index: number) {
+    if (showAnswer || !question) return;
+
+    setSelectedOption(index);
+    setShowAnswer(true);
+
+    if (index === question.correctAnswer) {
+      setScore((prev) => prev + 1);
+    }
+  }
+
+  function handleNext() {
+    if (currentQuestion >= TOTAL_QUESTIONS) {
+      setFinished(true);
+      return;
+    }
+
+    // Adiciona o ID da questão atual na lista de excluídas para a próxima chamada
+    const nextUsedIds = [...usedIds, question!.id];
+    setUsedIds(nextUsedIds);
+    
+    setCurrentQuestion((prev) => prev + 1);
+    fetchQuestion(nextUsedIds);
+  }
+
+  // Enquanto a API não responde a primeira vez, ele mostra isso:
+  if (!question && !finished) return (
+    <main className="min-h-screen flex items-center justify-center bg-branco">
+      <p className="text-azul font-bold animate-bounce">Carregando questões...</p>
+    </main>
+  );
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg p-6 sm:p-8">     
-            <h1 className="text-xl sm:text-2xl font-bold text-center mb-6">
-                {question.statement}
-            </h1>
-            <div className="flex flex-col gap-4">
-                {question.options.map((option, index) => (
-                    <button
-                    key={index}
-                    className="w-full border-2 border-branco/80 rounded-xl p-4 text-lg text-center hover:border-azul hover:bg-azul/30 transition active:scale-95"
-                    >
-                    {option}
-                    </button>
-                ))}
+    <main className="min-h-screen flex items-center justify-center bg-branco/80 px-4">
+      <div className="w-full max-w-xl bg-branco rounded-2xl shadow-lg p-6 sm:p-8">
+        {finished ? (
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4 text-preto">Fim do jogo 🎉</h1>
+            <p className="text-lg mb-6 text-preto/70">Você acertou {score} de {TOTAL_QUESTIONS}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-azul text-branco p-4 rounded-xl w-full font-bold hover:opacity-90 transition"
+            >
+              Jogar novamente
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="text-sm text-center mb-4 text-preto/50">
+              Pergunta {currentQuestion} de {TOTAL_QUESTIONS} • Pontos: {score}
             </div>
-        </div>
+
+            <QuestionCard
+              question={question!}
+              selectedOption={selectedOption}
+              showAnswer={showAnswer}
+              onSelect={handleSelectOption}
+            />
+
+            {showAnswer && (
+              <button
+                onClick={handleNext}
+                className="mt-6 w-full bg-azul text-branco p-4 rounded-xl font-bold hover:opacity-90 transition"
+              >
+                Próxima pergunta
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </main>
   );
 }

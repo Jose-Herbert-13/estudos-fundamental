@@ -5,6 +5,9 @@
   --preto: #171717;
   --azul: #3b82f6;
   --vermelho: #ef4444;
+  --verde: #10b981;
+
+  --atualizador: 0;
 }
 
 @theme inline {
@@ -12,6 +15,7 @@
   --color-preto: var(--preto);
   --color-azul: var(--azul);
   --color-vermelho: var(--vermelho);
+  --color-verde: var(--verde);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -23,6 +27,7 @@
     --preto: #171717;
     --azul: #3b82f6;
     --vermelho: #ef4444;
+    --verde: #10b981;
   }
 }
 
