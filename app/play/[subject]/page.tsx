@@ -1,73 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import type { Question } from "@/types/question";
-import QuestionCard from "@/components/QuestionCard";
+import { useParams, useRouter } from "next/navigation";
 
-export default function PlayPage() {
+export default function SelectDifficultyPage() {
   const params = useParams();
-  const subject = params.subject as "portugues" | "matematica";
+  const router = useRouter();
 
-  const [question, setQuestion] = useState<Question | null>(null);
-  const [error, setError] = useState("");
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [showAnswer, setShowAnswer] = useState(false);
+  const subject = params.subject as string;
 
-  function handleSelectOption(index: number) {
-    if (showAnswer) return;
-    setSelectedOption(index);
-    setShowAnswer(true);
+  function handleSelect(difficulty: string) {
+    router.push(`/play/${subject}/${difficulty}`);
   }
-
-  function handleNextQuestion() {
-    setSelectedOption(null);
-    setShowAnswer(false);
-    setQuestion(null);
-  }
-
-  useEffect(() => {
-    if (!subject) return;
-
-    async function fetchQuestion() {
-      try {
-        const res = await fetch(`/api/questions?subject=${subject}`);
-        if (!res.ok) throw new Error();
-        const data: Question = await res.json();
-        setQuestion(data);
-      } catch {
-        setError("Erro ao carregar a pergunta.");
-      }
-    }
-
-    fetchQuestion();
-  }, [subject, question === null]);
-
-  if (error) return <p className="text-center">{error}</p>;
-  if (!question) return <p className="text-center">Carregando...</p>;
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-branco/80 px-4">
-      <div className="w-full max-w-xl bg-branco rounded-2xl shadow-lg p-6 sm:p-8">
-        <h1 className="text-xl sm:text-2xl font-bold text-center mb-6">
-          {question.statement}
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="bg-branco p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h1 className="text-2xl font-bold mb-6">
+          Escolha a dificuldade
         </h1>
 
-        <QuestionCard
-          question={question}
-          onSelect={handleSelectOption}
-          selectedOption={selectedOption}
-          showAnswer={showAnswer}
-        />
-
-        {showAnswer && (
+        <div className="flex flex-col gap-4">
           <button
-            onClick={handleNextQuestion}
-            className="mt-6 w-full bg-azul text-branco p-4 rounded-xl text-lg hover:bg-azul/80 transition"
+            onClick={() => handleSelect("facil")}
+            className="bg-verde text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
           >
-            Próxima pergunta
+            Fácil
           </button>
-        )}
+
+          <button
+            onClick={() => handleSelect("medio")}
+            className="bg-amarelo text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
+          >
+            Médio
+          </button>
+
+          <button
+            onClick={() => handleSelect("dificil")}
+            className="bg-vermelho text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
+          >
+            Difícil
+          </button>
+        </div>
       </div>
     </main>
   );

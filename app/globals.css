@@ -5,7 +5,9 @@
   --preto: #171717;
   --azul: #3b82f6;
   --vermelho: #ef4444;
+  --amarelo: #facc15;
   --verde: #10b981;
+  --roxo: #8b5cf6;
 
   --atualizador: 0;
 }
@@ -15,7 +17,9 @@
   --color-preto: var(--preto);
   --color-azul: var(--azul);
   --color-vermelho: var(--vermelho);
+  --color-amarelo: var(--amarelo);
   --color-verde: var(--verde);
+  --color-roxo: var(--roxo);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -27,7 +31,9 @@
     --preto: #171717;
     --azul: #3b82f6;
     --vermelho: #ef4444;
+    --amarelo: #facc15;
     --verde: #10b981;
+    --roxo: #8b5cf6;
   }
 }
 
