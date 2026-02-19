@@ -26,7 +26,7 @@ export default function SelectTopicPage() {
             <button
               key={topic}
               onClick={() => router.push(`/play/${subject}/${topic}`)}
-              className="bg-azul text-branco py-3 rounded-lg hover:scale-105"
+              className="bg-azul text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
             >
               {topic.replace("_", " ")}
             </button>

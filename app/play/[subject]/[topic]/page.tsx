@@ -19,7 +19,7 @@ export default function SelectDifficultyPage() {
             onClick={() =>
               router.push(`/play/${subject}/${topic}/facil`)
             }
-            className="bg-verde text-branco py-3 rounded-lg hover:scale-105"
+            className="bg-verde text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
           >
             Fácil
           </button>
@@ -28,7 +28,7 @@ export default function SelectDifficultyPage() {
             onClick={() =>
               router.push(`/play/${subject}/${topic}/medio`)
             }
-            className="bg-amarelo text-branco py-3 rounded-lg hover:scale-105"
+            className="bg-amarelo text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
           >
             Médio
           </button>
@@ -37,7 +37,7 @@ export default function SelectDifficultyPage() {
             onClick={() =>
               router.push(`/play/${subject}/${topic}/dificil`)
             }
-            className="bg-vermelho text-branco py-3 rounded-lg hover:scale-105"
+            className="bg-vermelho text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
           >
             Difícil
           </button>

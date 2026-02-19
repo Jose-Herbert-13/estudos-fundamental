@@ -129,7 +129,7 @@ export default function GamePage() {
           <div className="flex flex-col gap-4">
             <button
               onClick={handleRestart}
-              className="bg-azul text-branco py-3 rounded-lg"
+              className="bg-azul text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
             >
               Jogar novamente
             </button>
@@ -138,7 +138,7 @@ export default function GamePage() {
               difficulty !== "dificil" && (
                 <button
                   onClick={handleNextDifficulty}
-                  className="bg-roxo text-branco py-3 rounded-lg"
+                  className="bg-roxo text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
                 >
                   Próxima dificuldade
                 </button>
@@ -150,7 +150,7 @@ export default function GamePage() {
                   `/play/${subject}`
                 )
               }
-              className="bg-cinza text-branco py-3 rounded-lg"
+              className="bg-verde text-branco py-3 rounded-lg hover:cursor-pointer hover:scale-105"
             >
               Trocar assunto
             </button>
@@ -192,7 +192,7 @@ export default function GamePage() {
                 onClick={() =>
                   handleSelect(index)
                 }
-                className={`p-3 rounded-lg border ${
+                className={`p-3 rounded-lg border hover:cursor-pointer hover:scale-105 ${
                   showAnswer
                     ? index ===
                       currentQuestion.correctAnswer
